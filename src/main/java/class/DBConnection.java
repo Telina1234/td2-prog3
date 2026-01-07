@@ -1,39 +1,25 @@
+package enum
 
+import java.sql.Connection
+import java.sql.DriverManager
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
+object DBConnection {
 
-public class DBConnection {
+var connection: Connection? = null
 
-    private static Connection connection = null;
-
-    private DBConnection() {}
-
-    public static Connection getDBConnection() {
+fun getConnection(): Connection? {
         if (connection == null) {
-            try {
-                String jdbcUrl = System.getenv("JDBC_URL");
-                String username = System.getenv("USERNAME");
-                String password = System.getenv("PASSWORD");
+val url = System.getenv("JDBC_URL")
+val user = System.getenv("USERNAME")
+val password = System.getenv("PASSWORD")
 
-                connection = DriverManager.getConnection(jdbcUrl, username, password);
-                System.out.println("Connexion réussie");
-
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
+connection = DriverManager.getConnection(url, user, password)
         }
-        return connection;
+                return connection
     }
 
-    public static void closeConnection() {
-        try {
-            if (connection != null) {
-                connection.close();
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
+fun closeConnection() {
+    connection?.close()
+    connection = null
+}
 }
